@@ -33,7 +33,7 @@ define(['knockout'], function(ko) {
                 failureCallback: fail
             };
 
-            auth.basicLogon(authObj);
+            chat.registerUser();
         };
 
         var showLoginWindow = function() {

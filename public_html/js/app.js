@@ -79,8 +79,11 @@ requirejs(['jquery', 'model/auth', 'model/chat', 'model/user'], function($, Auth
 requirejs(['signals'], function(Signals) {
     signal = {
         userUpdated: new Signals(),
-        msgReceived: new Signals()
-    }
+        msgReceived: new Signals(),
+        userlistReceived: new Signals(),
+        roomlistReceived: new Signals(),
+        roomJoined: new Signals()
+    };
 });
 
 /*

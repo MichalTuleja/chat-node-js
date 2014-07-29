@@ -2,7 +2,7 @@ define([], function(){
     return function() {
         var self = this;
         
-        this.user = {
+        this.data = {
             id: 0,
             name: '',
             status: ''
