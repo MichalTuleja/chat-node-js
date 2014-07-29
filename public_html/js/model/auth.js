@@ -1,15 +1,30 @@
-var Auth = function() {
-    var self = this;
-    
-    this.userData = {username: 'Default user', room: 'Default room'};
-    
-    this.basicLogon = function(authObj) {
-        self.userData.username = authObj.username;
-        self.userData.room = authObj.room;
-        authObj.successCallback();
+define(['model/user'], function(User) {
+    return function() {
+        var self = this;
         
-        if(false) {
-            authObj.failureCallback();
-        }
+        var user = new User();
+
+        this.data = { username: user.name,
+                      authorized: false };
+
+        this.basicLogon = function(authObj) {
+            chat.registerUser(authObj.username);
+            
+            /*
+            var userUpdateHandler = function() {
+                if(data.authorized === true) {
+                    self.data.username = authObj.username;
+                }
+                
+            };
+            
+            signal.userUpdated.add(userUpdateHandler);
+            */
+        };
+        
+        this.logoff = function() {
+            self.data = {};
+            user.clear();
+        };
     };
-};
+});

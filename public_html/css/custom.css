@@ -1,0 +1,32 @@
+#msgWindow {
+    margin:0;
+    padding:0;
+    overflow:hidden;
+}
+
+#msgPanel {
+    margin:0;
+    padding:5px;
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+/* enable absolute positioning */
+.inner-addon { 
+    position: relative; 
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }

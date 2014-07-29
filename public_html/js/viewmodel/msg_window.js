@@ -1,41 +1,54 @@
-var MsgWindowViewModel = function() {
-    var self = this;
+define(['knockout', 'view/chatbox'], function(ko, WindowResizer) {
+    return function() {
+        var self = this;
 
-    this.messages = ko.observableArray();
+        this.messages = ko.observableArray();
+        
+        var windowResizer = new WindowResizer();
 
-    var msgObjArr = [
-        {user: 'User1', time: new Date(), msg: 'Hello1!'},
-        {user: 'User2', time: new Date(), msg: 'Hello2!'},
-        {user: 'User3', time: new Date(), msg: 'Hello3!'},
-        {user: 'User4', time: new Date(), msg: 'Hello4!'}
-    ];
+        var msgObjArr = [
+            {user: 'User1', time: new Date(), msg: 'Hello1!'},
+            {user: 'User2', time: new Date(), msg: 'Hello2!'},
+            {user: 'User3', time: new Date(), msg: 'Hello3!'},
+            {user: 'User4', time: new Date(), msg: 'Hello4!'}
+        ];
 
-    var initialize = function() {
-        for (k = 0; k < 10; k++) {
-            for (var i = 0; i < msgObjArr.length; i++) {
-                self.addMsg(msgObjArr[i].user, msgObjArr[i].msg);
+        var initialize = function() {
+            self.addMsg('System', 'Welcome to the chat application!');
+
+            signal.msgReceived.add(msgReceived);
+
+            for (k = 0; k < 1; k++) {
+                for (var i = 0; i < msgObjArr.length; i++) {
+                    self.addMsg(msgObjArr[i].user, msgObjArr[i].msg);
+                }
             }
-        }
-    };
 
-    this.addMsg = function(user, msg) {
-        var date = new Date();
-        self.messages.push({user: user, time: date, formattedTime: formatDate(date), msg: msg});
-    };
+            setTimeout(self.scrollToBottom, 100);
+        };
 
-    this.receive = function(message) {
-        self.addMsg("Some user", message);
-    };
+        this.addMsg = function(user, msg) {
+            var date = new Date();
+            self.messages.push({msg: true, user: user, time: date, formattedTime: formatDate(date), msg: msg});
+            windowResizer.scrollToBottom();
+        };
 
-    var formatDate = function(date) {
-        if (date.getMinutes().toString().length === 1) {
-            var min = "0" + date.getMinutes();
-        }
-        else {
-            var min = date.getMinutes();
-        }
-        return date.getHours() + ':' + min;
-    };
+        var msgReceived = function(message) {
+            message1 = 'Unknown message'
+            self.addMsg("Some user", message);
+        };
 
-    initialize();
-};
+        var formatDate = function(date) {
+            if (date.getMinutes().toString().length === 1) {
+                var min = "0" + date.getMinutes();
+            }
+            else {
+                var min = date.getMinutes();
+            }
+            return date.getHours() + ':' + min;
+        };
+
+        initialize();
+    };
+    ;
+});
