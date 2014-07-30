@@ -3,8 +3,7 @@ define(['io'], function(io) {
         var self = this;
         
         var socket = io();
-        var rooms;
-        var users;
+        this.users;
 
         this.send = function(msg) {
             socket.emit('msg', msg);
@@ -12,19 +11,15 @@ define(['io'], function(io) {
         };
         
         this.getRooms = function() {
-            return rooms;
+            return rooms.getData();
         };
         
         this.getUsers = function() {
             return users;
         };
 
-        this.registerRoom = function() {
-
-        };
-
-        this.joinRoom = function(id) {
-            socket.emit('joinRoom', JSON.stringify({id: id}));
+        this.joinRoom = function(id, name) {
+            socket.emit('joinRoom', JSON.stringify({id: id, name: name}));
         };
 
         this.requestRoomList = function() {
@@ -58,15 +53,19 @@ define(['io'], function(io) {
         });
         
         socket.on('userlist', function(data) {
-            self.users = JSON.parse(data);
-            signal.userlistReceived.dispatch();
-            console.log('Userlist updated.');
-            console.log(dataObj);
+            try {
+                var users = JSON.parse(data);
+                signal.userlistReceived.dispatch(users);
+                console.log('Userlist updated.');
+            }
+            catch(e) {
+                console.log('There was an error during userlist fetch');
+            }
         });
         
         socket.on('roomlist', function(data) {
             try {
-                self.rooms = JSON.parse(data);
+                rooms.updateList(JSON.parse(data));
                 signal.roomlistReceived.dispatch();
                 console.log('Roomlist updated.');
             }
@@ -78,6 +77,8 @@ define(['io'], function(io) {
         socket.on('joinedroom', function(roomData) {
             try {
                 signal.roomJoined.dispatch(JSON.parse(roomData));
+                self.requestUserList();
+                
                 console.log('Room data received.');
             }
             catch(e) {

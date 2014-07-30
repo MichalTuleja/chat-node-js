@@ -1,3 +1,5 @@
+var Client = require('./client.js');
+
 var Room = function() {
 	var self = this;
 	
@@ -17,7 +19,15 @@ var Room = function() {
 			client.socket.emit('msg', JSON.stringify(msgObj));
 		}
 	};
-}
+	
+	this.registerClient = function(client) {
+		this.clients[client.id] = client;
+	};
+	
+	this.unregisterClient = function(client) {
+		delete this.clients[client.id];
+	};
+};
 
 Room.idCounter = 0;
 

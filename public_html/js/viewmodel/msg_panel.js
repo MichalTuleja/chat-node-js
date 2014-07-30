@@ -33,9 +33,25 @@ define(['knockout', 'view/chatbox'], function(ko, WindowResizer) {
             windowResizer.scrollToBottom();
         };
 
-        var msgReceived = function(message) {
-            message1 = 'Unknown message'
-            self.addMsg("Some user", message);
+        var msgReceived = function(msgData) {
+            try {
+                msgData = JSON.parse(msgData);
+            } catch(e) {
+                console.log('Warning: incoming message is not in JSON format.');
+            }
+            
+            try {
+                if(typeof msgData === 'object') {
+                    var user = msgData.user.name;
+                    var msg = msgData.msg.text;
+                    self.addMsg(user, msg);
+                }
+                else if(typeof msgData === 'string') {
+                    self.addMsg('System', msgData);
+                }                
+            } catch(e) {
+                console.log('Broken message received.');
+            }
         };
 
         var formatDate = function(date) {

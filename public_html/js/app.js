@@ -1,24 +1,4 @@
 /*
- <script src="js/lib/jquery.min.js"></script>
- <script src="js/lib/bootstrap.min.js"></script>
- <script src="js/lib/knockout.js"></script>
- 
- <script src="js/model/auth.js"></script>
- <script src="js/model/chat.js"></script>
- 
- <script src="js/viewmodel/logon.js"></script>
- <script src="js/viewmodel/navbar.js"></script>
- <script src="js/viewmodel/msg_input.js"></script>
- <script src="js/viewmodel/msg_window.js"></script>
- <script src="js/viewmodel/user_list.js"></script>
- <script src="js/viewmodel/rooms.js"></script>
- 
- <script src="js/view/chatbox.js"></script>
- 
- <script src="js/app.js"></script>
- */
-
-/*
  * Base config
  */
 
@@ -41,20 +21,14 @@ requirejs.config({
 /*
  * Error handling
  */
-
-var errorModal;
-
-var errorHandler = function(msg) {
+var coverError = function(msg) {
     requirejs(['jquery'], function($) {
-        requirejs(['bootstrap', 'knockout', 'viewmodel/error'], function(bootstrap, ko, ErrorModal) {
+        requirejs(['bootstrap', 'view/error'], function(bootstrap, ErrorModal) {
             var errorModal = new ErrorModal();
-            ko.applyBindings(errorModal, document.getElementById('errorModal'));
-            errorModal.errorDescription(msg);
-            errorModal.show();
+            errorModal.display(msg);
         });
     });
 };
-
 
 /*
  * Model
@@ -63,18 +37,22 @@ var errorHandler = function(msg) {
 var auth;
 var chat;
 var user;
+var rooms;
 var signal;
+var userlist;
 
-requirejs(['jquery', 'model/auth', 'model/chat', 'model/user'], function($, Auth, Chat, User) {
+requirejs(['jquery', 'model/auth', 'model/chat', 'model/rooms', 'model/userlist'], function($, Auth, Chat, Rooms, Userlist) {
         auth = new Auth();
         chat = new Chat();
+        rooms = new Rooms();
+        userlist = new Userlist();
     try {
 
     }
     catch (e) {
-        errorHandler('Model error');
+        coverError('Model error: ' + e.message);
     }
-}, errorHandler);
+}, coverError);
 
 requirejs(['signals'], function(Signals) {
     signal = {
@@ -82,7 +60,10 @@ requirejs(['signals'], function(Signals) {
         msgReceived: new Signals(),
         userlistReceived: new Signals(),
         roomlistReceived: new Signals(),
-        roomJoined: new Signals()
+        roomJoined: new Signals(),
+        userlistUpdated: new Signals(),
+        userHasJoined: new Signals(),
+        userHasLeft: new Signals()
     };
 });
 
@@ -90,32 +71,42 @@ requirejs(['signals'], function(Signals) {
  * View Model
  */
 
-var logon;
+var logonModal;
 var msgInput;
-var msgWindow;
+var msgPanel;
 var navbar;
-var userlist;
+var userlistPanel;
 var roomsModal;
+
+var roomsModalElement;
 
 
 requirejs(['knockout', 'jquery', 'bootstrap',
-    'viewmodel/logon', 'viewmodel/msg_input', 'viewmodel/msg_window',
-    'viewmodel/navbar', 'viewmodel/user_list', 'viewmodel/rooms'],
+    'viewmodel/modal/logon', 'viewmodel/msg_input', 'viewmodel/msg_panel',
+    'viewmodel/navbar', 'viewmodel/user_panel', 'viewmodel/modal/room'],
         function(ko, $, bootstrap,
-                LogonViewModel, MsgInputViewModel, MsgWindowViewModel,
-                NavbarViewModel, UserListViewModel, RoomsModalViewModel) {
+                LogonViewModel, MsgInputViewModel, MsgPanelViewModel,
+                NavbarViewModel, UserlistPanelViewModel, RoomsModalViewModel) {
 
-            logon = new LogonViewModel();
+            logonModal = new LogonViewModel();
             msgInput = new MsgInputViewModel();
-            msgWindow = new MsgWindowViewModel();
+            msgPanel = new MsgPanelViewModel();
             navbar = new NavbarViewModel();
-            userlist = new UserListViewModel();
+            userlistPanel = new UserlistPanelViewModel();
             roomsModal = new RoomsModalViewModel();
+            
+            roomsModalElement = $('#roomsModal');
 
-            ko.applyBindings(logon, document.getElementById('logonModal'));
+            ko.applyBindings(logonModal, document.getElementById('logonModal'));
             ko.applyBindings(msgInput, document.getElementById('msgInput'));
-            ko.applyBindings(msgWindow, document.getElementById('msgWindow'));
+            ko.applyBindings(msgPanel, document.getElementById('msgPanel'));
             ko.applyBindings(navbar, document.getElementById('navbar'));
-            ko.applyBindings(userlist, document.getElementById('userlist'));
+            ko.applyBindings(userlistPanel, document.getElementById('userlistPanel'));
             ko.applyBindings(roomsModal, document.getElementById('roomsModal'));
+            
+            runApplication();
         });
+
+var runApplication = function() {
+    logonModal.logon();
+};

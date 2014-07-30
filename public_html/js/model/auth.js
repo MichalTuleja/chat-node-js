@@ -10,17 +10,6 @@ define(['model/user'], function(User) {
 
         this.basicLogon = function(authObj) {
             chat.registerUser(authObj.username);
-            
-            /*
-            var userUpdateHandler = function() {
-                if(data.authorized === true) {
-                    self.data.username = authObj.username;
-                }
-                
-            };
-            
-            signal.userUpdated.add(userUpdateHandler);
-            */
         };
         
         this.logoff = function() {

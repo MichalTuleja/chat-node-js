@@ -3,7 +3,6 @@ define(['knockout'], function(ko) {
         var self = this;
 
         this.username = ko.observable('');
-        this.room = ko.observable('');
 
         var logonModal = $('#logonModal');
 
@@ -17,23 +16,7 @@ define(['knockout'], function(ko) {
         };
 
         this.authenticate = function() {
-            var success = function() {
-                navbar.username(auth.userData.username);
-                navbar.room(auth.userData.room);
-                hideLogonWindow();
-            };
-
-            var fail = function() {
-                alert("Logon error.");
-            };
-
-            var authObj = {
-                username: self.username(),
-                successCallback: success,
-                failureCallback: fail
-            };
-
-            chat.registerUser();
+            chat.registerUser(self.username());
         };
 
         var showLoginWindow = function() {
@@ -43,6 +26,7 @@ define(['knockout'], function(ko) {
         var hideLogonWindow = function() {
             logonModal.modal('hide');
         };
+        
+        signal.userUpdated.add(hideLogonWindow);
     };
-    ;
 });

@@ -57,9 +57,7 @@ define(['knockout'], function(ko) {
         
         var joinRoom = function(name) {
             console.log('Joining room ' + name);
-            
-            var id = roomsModal.findByName(name);
-            chat.joinRoom(id);
+            rooms.join(name);
         };
     };
 });

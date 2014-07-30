@@ -6,18 +6,17 @@ define(['knockout'], function(ko) {
         this.room = ko.observable('Default room');
         
         var logonModal = $('#logonModal');
-        var roomsModal = $('#roomsModal');
 
         this.logoff = function() {
-            showLoginWindow();
+            this.showLoginWindow();
         };
 
-        var showLoginWindow = function() {
+        this.showLoginWindow = function() {
             logonModal.modal('show');
         };
 
         this.showRoomsWindow = function() {
-            roomsModal.modal('show');
+            roomsModal.show();
         };
         
         var updateUserName = function(user) {

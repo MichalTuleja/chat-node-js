@@ -3,8 +3,8 @@ var WindowResizer = function() {
     
     var msgInput = $('#msgInput');
     var navBar = $('#navBar');
-    var msgWindow = $('#msgWindow');
-    var msgPanel = $('#msgPanel');
+    var msgWindow = $('#msgPanel');
+    var msgPanel = $('#msgPanelBody');
 
     var initialize = function() {
         self.setDimensions();
