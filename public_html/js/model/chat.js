@@ -85,5 +85,37 @@ define(['io'], function(io) {
                 console.log('There was an error during roomlist fetch');
             }
         });
+        
+        socket.on('userJoined', function(userData) {
+            try {
+                var data = JSON.parse(userData);
+                signal.userJoinedRoom.dispatch(data);
+                console.log('User ' + data.name + ' joined the conversation.');
+            }
+            catch(e) {
+                
+            }
+        });
+        
+        socket.on('userLeft', function(userData) {
+            try {
+                var data = JSON.parse(userData);
+                signal.userLeftRoom.dispatch(data);
+                console.log('User ' + data.name + ' left the conversation.');
+            }
+            catch(e) {
+                
+            }            
+        });
+        
+        socket.on('reconnect_error', function() {
+            console.log('Connection error');
+            coverError('Connection error');
+        });
+        
+        socket.on('reconnect', function() {
+            console.log('Reconnected');
+            errorModal.dispose();
+        });
     };
 });

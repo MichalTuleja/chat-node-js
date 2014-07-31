@@ -21,13 +21,16 @@ requirejs.config({
 /*
  * Error handling
  */
-var coverError = function(msg) {
-    requirejs(['jquery'], function($) {
-        requirejs(['bootstrap', 'view/error'], function(bootstrap, ErrorModal) {
-            var errorModal = new ErrorModal();
-            errorModal.display(msg);
-        });
+var errorModal;
+
+requirejs(['jquery'], function($) {
+    requirejs(['bootstrap', 'view/error'], function(bootstrap, ErrorModal) {
+        errorModal = new ErrorModal();
     });
+});
+
+var coverError = function(msg) {
+    errorModal.display(msg);
 };
 
 /*
@@ -62,8 +65,8 @@ requirejs(['signals'], function(Signals) {
         roomlistReceived: new Signals(),
         roomJoined: new Signals(),
         userlistUpdated: new Signals(),
-        userHasJoined: new Signals(),
-        userHasLeft: new Signals()
+        userJoinedRoom: new Signals(),
+        userLeftRoom: new Signals()
     };
 });
 

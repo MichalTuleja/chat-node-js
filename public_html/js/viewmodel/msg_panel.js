@@ -6,13 +6,15 @@ define(['knockout', 'view/chatbox'], function(ko, WindowResizer) {
         
         var windowResizer = new WindowResizer();
 
+        var msgObjArr = [];
+/*
         var msgObjArr = [
             {user: 'User1', time: new Date(), msg: 'Hello1!'},
             {user: 'User2', time: new Date(), msg: 'Hello2!'},
             {user: 'User3', time: new Date(), msg: 'Hello3!'},
             {user: 'User4', time: new Date(), msg: 'Hello4!'}
         ];
-
+*/
         var initialize = function() {
             self.addMsg('System', 'Welcome to the chat application!');
 

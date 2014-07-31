@@ -37,7 +37,7 @@ define([], function(){
         };
         
         signal.userlistReceived.add(userlistRcvHandler);
-        signal.userHasJoined.add(addHandler);
-        signal.userHasLeft.add(removeHandler);
+        signal.userJoinedRoom.add(addHandler);
+        signal.userLeftRoom.add(removeHandler);
     };
 });

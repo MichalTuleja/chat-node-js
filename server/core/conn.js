@@ -22,9 +22,21 @@ var Connection = function(socket, clients, rooms) {
 		socket.on('joinRoom', joinRoom);
 	};
 	
+	var quitRoom = function() {
+		if(room !== null) {
+			room.unregisterClient(client);
+		}		
+	};
+	
 	var disconnect = function() {
 		console.log('User disconnected.');
 		socket.broadcast.emit('msg', 'User ' + client.name + ' disconnected.');
+		try {
+			quitRoom();
+		}
+		catch(e) {
+			console.log('Error while disconnecting client');
+		}
 	};
 	
 	var registerClient = function(userData) {
@@ -57,7 +69,9 @@ var Connection = function(socket, clients, rooms) {
 		for(var roomIdx in rooms) {
 			var room = rooms[roomIdx];
 			if(room.public) {
-				roomList.push({id: room.id, name: room.name, description: room.description});
+				roomList.push({id: room.id, 
+								   name: room.name, 
+								   description: room.description});
 			}
 		}
 		socket.emit('roomlist', JSON.stringify(roomList));
@@ -78,6 +92,8 @@ var Connection = function(socket, clients, rooms) {
 	};
 	
 	var joinRoom = function(data) {
+		quitRoom();
+		
 		var consideredRoom = JSON.parse(data);
 		
 		if(rooms[consideredRoom.id] != null) {
@@ -85,7 +101,9 @@ var Connection = function(socket, clients, rooms) {
 			room.registerClient(client);
 			client.addActiveRoom(room);
 			
-			socket.emit('joinedroom', JSON.stringify({id: room.id, name: room.name, description: room.description}));
+			socket.emit('joinedroom', JSON.stringify({id: room.id, 
+													  name: room.name, 
+													  description: room.description}));
 		}
 		else {
 			socket.emit('joinedroom', null);
